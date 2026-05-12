@@ -1,41 +1,205 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Product index{% endblock %}
+{% block title %}Produits{% endblock %}
 
 {% block body %}
-    <h1>Product index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Unit</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for product in products %}
-            <tr>
-                <td>{{ product.id }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.description }}</td>
-                <td>{{ product.price }}</td>
-                <td>{{ product.unit }}</td>
-                <td>
-                    <a href="{{ path('app_product_show', {'id': product.id}) }}">show</a>
-                    <a href="{{ path('app_product_edit', {'id': product.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<div class="min-h-screen bg-gray-50 flex">
 
-    <a href="{{ path('app_product_new') }}">Create new</a>
+    {# =========================
+       SIDEBAR
+    ========================== #}
+    <twig:SideBarNav />
+
+    {# =========================
+       MAIN CONTENT
+    ========================== #}
+    <main class="flex-1 p-8">
+
+        {# Header #}
+        <div class="flex items-center justify-between mb-8">
+
+            <div>
+                <h1 class="text-4xl font-bold text-gray-900">
+                    Produits & Services
+                </h1>
+
+                <p class="text-gray-500 mt-2">
+                    Gérez votre catalogue de prestations
+                </p>
+            </div>
+
+            <a href="{{ path('app_product_new') }}"
+               class="bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-3 rounded-xl font-medium shadow-sm flex items-center gap-2">
+
+                <span class="text-xl">+</span>
+                Ajouter un produit
+            </a>
+
+        </div>
+
+        {# =========================
+           TABLE CARD
+        ========================== #}
+        <div class="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
+
+            <table class="w-full">
+
+                {# TABLE HEAD #}
+                <thead class="bg-gray-50 border-b border-gray-200">
+
+                <tr>
+
+                    <th class="text-left px-6 py-5 font-semibold text-gray-800">
+                        Nom
+                    </th>
+
+                    <th class="text-left px-6 py-5 font-semibold text-gray-800">
+                        Description
+                    </th>
+
+                    <th class="text-left px-6 py-5 font-semibold text-gray-800">
+                        Prix unitaire
+                    </th>
+
+                    <th class="text-left px-6 py-5 font-semibold text-gray-800">
+                        Unité
+                    </th>
+
+                    <th class="text-right px-6 py-5 font-semibold text-gray-800">
+                        Actions
+                    </th>
+
+                </tr>
+
+                </thead>
+
+                {# TABLE BODY #}
+                <tbody>
+
+                {% for product in products %}
+
+                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+
+                        {# Nom #}
+                        <td class="px-6 py-5">
+
+                            <div class="font-medium text-gray-900">
+                                {{ product.name }}
+                            </div>
+
+                        </td>
+
+                        {# Description #}
+                        <td class="px-6 py-5 text-gray-600 max-w-md">
+
+                            {{ product.description }}
+
+                        </td>
+
+                        {# Prix #}
+                        <td class="px-6 py-5 font-semibold text-gray-900">
+
+                            {{ product.price }} €
+
+                        </td>
+
+                        {# Unité #}
+                        <td class="px-6 py-5">
+
+                            <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
+
+                                {{ product.unit.value }}
+
+                            </span>
+
+                        </td>
+
+                        {# Actions #}
+                        <td class="px-6 py-5">
+
+                            <div class="flex justify-end items-center gap-4">
+
+                                {# Voir #}
+                                <a href="{{ path('app_product_show', {id: product.id}) }}"
+                                   class="text-gray-500 hover:text-blue-600 transition text-lg">
+
+                                    👁️
+
+                                </a>
+
+                                {# Edit #}
+                                <a href="{{ path('app_product_edit', {id: product.id}) }}"
+                                   class="text-gray-500 hover:text-blue-600 transition text-lg">
+
+                                    ✏️
+
+                                </a>
+
+                                {# Delete #}
+                                <form method="post"
+                                      action="{{ path('app_product_delete', {id: product.id}) }}"
+                                      onsubmit="return confirm('Supprimer ce produit ?');">
+
+                                    <input type="hidden"
+                                           name="_token"
+                                           value="{{ csrf_token('delete' ~ product.id) }}">
+
+                                    <button class="text-gray-500 hover:text-red-600 transition text-lg">
+
+                                        🗑️
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="5"
+                            class="text-center py-16 text-gray-500">
+
+                            <div class="flex flex-col items-center gap-4">
+
+                                <div class="text-6xl">
+                                    📦
+                                </div>
+
+                                <div>
+
+                                    <p class="text-lg font-medium text-gray-700">
+                                        Aucun produit trouvé
+                                    </p>
+
+                                    <p class="text-sm text-gray-500 mt-1">
+                                        Commencez par créer votre premier produit ou service.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
 {% endblock %}

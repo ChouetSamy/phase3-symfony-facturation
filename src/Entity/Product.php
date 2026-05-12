@@ -35,6 +35,10 @@ class Product
     #[ORM\OneToMany(targetEntity: InvoiceItem::class, mappedBy: 'product', orphanRemoval: true)]
     private Collection $invoiceItems;
 
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->invoiceItems = new ArrayCollection();
@@ -119,6 +123,18 @@ class Product
                 $invoiceItem->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
